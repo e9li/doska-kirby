@@ -1,3 +1,5 @@
+<img src="assets/icon.svg" alt="Doska logo" width="84" height="75">
+
 # Doska for Kirby
 
 Dev-only toolbar for a Kirby site. Point at an element, write a note, and copy a prompt that names the PHP snippet and, in content mode, the content file and block. A connected agent can also read and resolve notes through the stateless MCP endpoint.
