@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Doska\Kirby;
 
+use Doska\Shared\Html;
 use Doska\Twig\Comments;
 use Kirby\Cms\App;
 use Kirby\Cms\Block;
@@ -60,13 +61,13 @@ final class Frames
 
         // The toolbar only walks comments inside the document element.
         // A comment wrapped around the whole page sits outside <html>.
-        if (preg_match('/<body\b[^>]*>/i', $html, $match, PREG_OFFSET_CAPTURE)) {
-            $at = $match[0][1] + strlen($match[0][0]);
-            $html = substr_replace($html, "\n".$open, $at, 0);
-            $closeAt = strripos($html, '</body>');
-            if (false !== $closeAt && $closeAt >= $at) {
-                return substr_replace($html, $close."\n", $closeAt, 0);
-            }
+        $body = Html::bodyOffsets($html);
+        if (null !== $body) {
+            [$openAt, $closeAt] = $body;
+            $html = substr_replace($html, "\n".$open, $openAt, 0);
+            $closeAt += strlen($open) + 1;
+
+            return substr_replace($html, $close."\n", $closeAt, 0);
         }
 
         return $open.$html.$close;

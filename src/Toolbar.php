@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Doska\Kirby;
 
+use Doska\Shared\Html;
 use Kirby\Cms\App;
 
 /**
@@ -16,14 +17,11 @@ final class Toolbar
         if (str_contains($html, 'id="doska-toolbar"')) {
             return $html;
         }
-        if (!preg_match('/<body\b[^>]*>/i', $html, $open, PREG_OFFSET_CAPTURE)) {
+        $body = Html::bodyOffsets($html);
+        if (null === $body) {
             return $html;
         }
-        $openAt = $open[0][1] + strlen($open[0][0]);
-        $closeAt = strripos($html, '</body>');
-        if (false === $closeAt || $closeAt < $openAt) {
-            return $html;
-        }
+        [$openAt, $closeAt] = $body;
 
         $dock = $kirby->option('doska.kirby.dock', 'bottom');
         if (!is_string($dock) || !in_array($dock, ['top', 'right', 'bottom', 'left'], true)) {
